@@ -197,7 +197,7 @@ function createSkillCard(skill) {
 
                 <!-- Action Buttons -->
                 <div class="skill-card-actions">
-                    <button class="skill-action-btn skill-connect-btn" onclick="event.stopPropagation(); handleConnect(${skill.user_id})" data-user-id="${skill.user_id}">
+                    <button class="skill-action-btn skill-connect-btn" onclick="event.stopPropagation(); handleConnectFromCard(${skill.user_id})" data-user-id="${skill.user_id}">
                         💬 Connect
                     </button>
                     <button class="skill-action-btn skill-message-btn" onclick="event.stopPropagation(); handleMessage(${skill.user_id})" data-user-id="${skill.user_id}">
@@ -256,12 +256,23 @@ function switchSkillTab(tabButton, tabName) {
     });
 }
 
-// Handle Connect button click
-function handleConnect(userId) {
+// Handle Connect button click from skill card
+function handleConnectFromCard(userId) {
+    console.log('handleConnectFromCard called with userId:', userId);
     const skillCard = skillsData.find(s => s.user_id === userId);
+    console.log('Found skill card:', skillCard);
     if (skillCard) {
         openConnectModal(skillCard);
+    } else {
+        console.error('Skill card not found for user:', userId);
+        showToast('Error: Skill not found', 'error');
     }
+}
+
+// Legacy function - redirects to handleConnectFromCard
+function handleConnect(userId) {
+    console.log('handleConnect (legacy) called');
+    handleConnectFromCard(userId);
 }
 
 // Handle Message button click
@@ -324,8 +335,17 @@ if (document.readyState === 'loading') {
     initializeHome();
 }
 
+// Store current skill data globally for the modal
+let currentConnectSkillData = null;
+
 // Connect Modal Functions
 function openConnectModal(skillData) {
+    console.log('openConnectModal called with:', skillData);
+    
+    // Store skill data for form submission
+    currentConnectSkillData = skillData;
+    console.log('Stored skill data:', currentConnectSkillData);
+    
     // Create modal HTML
     const modalHTML = `
         <div id="connectModal" class="modal active" style="display: flex;">
@@ -334,7 +354,7 @@ function openConnectModal(skillData) {
                     <h3 class="modal-title">Connect with ${skillData.user}</h3>
                     <button class="modal-close" onclick="closeConnectModal()">&times;</button>
                 </div>
-                <form id="connectForm" onsubmit="handleConnect(event, ${skillData.user_id}, '${skillData.offering}')">
+                <form id="connectForm">
                     <div style="margin-bottom: 1.5rem;">
                         <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
                             <div style="font-size: 3rem;">${skillData.avatar}</div>
@@ -414,6 +434,20 @@ function openConnectModal(skillData) {
     // Add modal to body
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     
+    // Add form submit event listener
+    const form = document.getElementById('connectForm');
+    console.log('Form element found:', form);
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            console.log('Form submitted!');
+            event.preventDefault();
+            handleConnectSubmit();
+        });
+        console.log('Event listener added to form');
+    } else {
+        console.error('Form element not found!');
+    }
+    
     // Add modal styles
     if (!document.getElementById('modal-styles')) {
         const modalStyles = document.createElement('style');
@@ -490,28 +524,42 @@ function closeConnectModal() {
     }
 }
 
-async function handleConnect(event, providerId, skillOffering) {
-    event.preventDefault();
+// New function to handle form submission using stored data
+async function handleConnectSubmit() {
+    console.log('=== handleConnectSubmit called ===');
+    console.log('Current skill data:', currentConnectSkillData);
+    
+    if (!currentConnectSkillData) {
+        console.error('❌ No skill data available');
+        showToast('Error: No skill data available', 'error');
+        return;
+    }
     
     const submitBtn = document.getElementById('connectSubmitBtn');
+    if (!submitBtn) {
+        console.error('❌ Submit button not found!');
+        return;
+    }
+    
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Sending...';
     submitBtn.disabled = true;
+    console.log('Submit button disabled, showing "Sending..."');
     
     try {
-        // Find the skill ID for the offering
-        const skillToLearn = skillsData.find(s => s.user_id === providerId && s.offering === skillOffering);
+        const providerId = currentConnectSkillData.user_id;
+        const skillId = currentConnectSkillData.skill_id || currentConnectSkillData.offering_skill_id;
         
-        console.log('Connecting to user:', providerId);
-        console.log('Skill found:', skillToLearn);
+        console.log('📤 Connecting to user:', providerId);
+        console.log('📚 Using skill ID:', skillId);
+        console.log('📋 Full skill data:', currentConnectSkillData);
         
-        const message = document.getElementById('connectMessage').value || 
-                       `Hi! I'm interested in learning ${skillOffering}.`;
-        const meetingPreference = document.getElementById('meetingPreference').value;
+        const message = document.getElementById('connectMessage').value.trim();
+        const meetingPreference = document.getElementById('meetingPreference').value || 'online';
         
         const requestBody = {
             provider_id: providerId,
-            requested_skill_id: skillToLearn?.skill_id || 1,
+            requested_skill_id: skillId,
             message: message,
             meeting_preference: meetingPreference
         };
@@ -539,13 +587,13 @@ async function handleConnect(event, providerId, skillOffering) {
             if (data.already_connected) {
                 showToast('💬 Already connected! Opening chat...', 'success');
             } else {
-                showToast('✅ Connected! Opening chat... 💬', 'success');
+                showToast('✅ Connected! Redirecting to connections... 💬', 'success');
             }
             
-            // Redirect to messages page immediately to start chatting
+            // Redirect to connections page to see the new connection
             setTimeout(() => {
-                window.location.href = 'messages.html';
-            }, 800);
+                window.location.href = 'connections.html';
+            }, 1000);
         } else {
             showToast(data.message || 'Failed to send request', 'error');
             submitBtn.textContent = originalText;

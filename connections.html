@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Connections - SkillXchange</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header header-sticky">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                                <filter id="shadow">
+                                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+                                </filter>
+                            </defs>
+                            <ellipse cx="35" cy="50" rx="18" ry="22" fill="#2D3436" filter="url(#glow)" opacity="0.95"/>
+                            <ellipse cx="65" cy="50" rx="18" ry="22" fill="#636E72" filter="url(#glow)" opacity="0.95"/>
+                            <g stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.9">
+                                <circle cx="30" cy="42" r="3" fill="#FFFFFF"/>
+                                <circle cx="35" cy="48" r="3" fill="#FFFFFF"/>
+                                <circle cx="40" cy="44" r="3" fill="#FFFFFF"/>
+                                <circle cx="32" cy="54" r="3" fill="#FFFFFF"/>
+                                <line x1="30" y1="42" x2="35" y2="48"/>
+                                <line x1="35" y1="48" x2="40" y2="44"/>
+                                <line x1="35" y1="48" x2="32" y2="54"/>
+                                <line x1="30" y1="42" x2="40" y2="44"/>
+                            </g>
+                            <g stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.9">
+                                <circle cx="60" cy="44" r="3" fill="#FFFFFF"/>
+                                <circle cx="65" cy="48" r="3" fill="#FFFFFF"/>
+                                <circle cx="70" cy="42" r="3" fill="#FFFFFF"/>
+                                <circle cx="68" cy="54" r="3" fill="#FFFFFF"/>
+                                <line x1="60" y1="44" x2="65" y2="48"/>
+                                <line x1="65" y1="48" x2="70" y2="42"/>
+                                <line x1="65" y1="48" x2="68" y2="54"/>
+                                <line x1="60" y1="44" x2="70" y2="42"/>
+                            </g>
+                            <g stroke="#E8C547" stroke-width="2.5" fill="none" filter="url(#glow)">
+                                <path d="M 45 45 Q 50 40, 55 45" stroke-linecap="round"/>
+                                <polygon points="55,45 52,43 52,47" fill="#E8C547"/>
+                                <path d="M 55 55 Q 50 60, 45 55" stroke-linecap="round"/>
+                                <polygon points="45,55 48,53 48,57" fill="#E8C547"/>
+                            </g>
+                            <ellipse cx="35" cy="50" rx="20" ry="24" fill="none" stroke="rgba(232, 197, 71, 0.3)" stroke-width="1" opacity="0.6"/>
+                            <ellipse cx="65" cy="50" rx="20" ry="24" fill="none" stroke="rgba(232, 197, 71, 0.3)" stroke-width="1" opacity="0.6"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">SkillXchange</span>
+                </div>
+                <nav class="nav-menu">
+                    <a href="home.html" class="nav-link">Explore</a>
+                    <a href="my-skills.html" class="nav-link">My Skills</a>
+                    <a href="connections.html" class="nav-link active">My Connections</a>
+                    <a href="messages.html" class="nav-link">Messages</a>
+                </nav>
+                <div class="header-actions">
+                    <button class="icon-btn" id="notificationsBtn">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                    </button>
+                    <div class="user-avatar" id="userAvatar">JD</div>
+                    <button id="logoutBtn" class="btn-text">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">🤝 My Connections</h1>
+                <p class="page-description">Manage your skill exchange connections and track your learning journey</p>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="connections-tabs">
+                <button class="connections-tab active" data-status="all" onclick="filterConnections('all')">
+                    All Connections
+                </button>
+                <button class="connections-tab" data-status="pending" onclick="filterConnections('pending')">
+                    Pending Requests
+                </button>
+                <button class="connections-tab" data-status="accepted" onclick="filterConnections('accepted')">
+                    Active
+                </button>
+                <button class="connections-tab" data-status="completed" onclick="filterConnections('completed')">
+                    Completed
+                </button>
+            </div>
+
+            <!-- Connections Grid -->
+            <div class="connections-grid" id="connectionsGrid">
+                <!-- Connections will be dynamically loaded here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">🔍</div>
+                <h3 class="empty-title">No connections found</h3>
+                <p class="empty-text">Start connecting with people to exchange skills!</p>
+                <a href="home.html" class="btn-primary" style="margin-top: 1rem;">Browse Skills</a>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-state" id="loadingState" style="display: none;">
+                <div class="spinner"></div>
+                <p>Loading your connections...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="check_auth.js"></script>
+    <script src="auth.js"></script>
+    <script src="connections.js"></script>
+</body>
+</html>

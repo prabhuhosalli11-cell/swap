@@ -88,6 +88,8 @@ try {
             'avatar' => $avatar,
             'offering' => $row['offering_skill'],
             'seeking' => $row['seeking_skill'] ?: 'Open to various skills',
+            'skill_id' => (int)$row['offering_skill_id'], // Add this for connect functionality
+            'offering_skill_id' => (int)$row['offering_skill_id'],
             'level' => ucfirst($row['proficiency_level'] ?: 'intermediate'),
             'category' => $row['category_name'] ?? $row['category'] ?? 'General',
             'description' => $row['skill_description'] ?: $row['bio'] ?: 'Passionate about sharing knowledge',

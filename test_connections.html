@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test - Connections</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 2rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 0.75rem 1.5rem;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        button:hover {
+            background: #2563EB;
+        }
+        .success {
+            background: #10B981;
+        }
+        .error {
+            background: #EF4444;
+        }
+        pre {
+            background: #1F2937;
+            color: #F9FAFB;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+        }
+        .status.success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+        .status.error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Connections API Debug Tool</h1>
+    
+    <!-- Test 1: Check Authentication -->
+    <div class="test-section">
+        <h2>1️⃣ Test Authentication</h2>
+        <button onclick="testAuth()">Check Auth Status</button>
+        <div id="authResult"></div>
+    </div>
+
+    <!-- Test 2: Fetch Connections -->
+    <div class="test-section">
+        <h2>2️⃣ Test Get Connections</h2>
+        <button onclick="testGetConnections()">Fetch Connections</button>
+        <div id="connectionsResult"></div>
+    </div>
+
+    <!-- Test 3: Check Database -->
+    <div class="test-section">
+        <h2>3️⃣ Test Database Connection</h2>
+        <button onclick="testDatabase()">Test Database</button>
+        <div id="databaseResult"></div>
+    </div>
+
+    <!-- Test 4: Raw API Response -->
+    <div class="test-section">
+        <h2>4️⃣ Raw API Response</h2>
+        <button onclick="testRawAPI()">Get Raw Response</button>
+        <div id="rawResult"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/project1/backend/api';
+
+        async function testAuth() {
+            const resultDiv = document.getElementById('authResult');
+            resultDiv.innerHTML = '<p>Testing...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/check_auth.php`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    resultDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ Authenticated as: ${data.user.full_name} (ID: ${data.user.user_id})
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="status error">
+                            ❌ Not authenticated. Please log in first!
+                        </div>
+                        <a href="signin.html">Go to Login</a>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testGetConnections() {
+            const resultDiv = document.getElementById('connectionsResult');
+            resultDiv.innerHTML = '<p>Fetching connections...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/get_connections.php`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const text = await response.text();
+                console.log('Raw response:', text);
+                
+                const data = JSON.parse(text);
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ Success! Found ${data.connections.length} connections
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="status error">
+                            ❌ Failed: ${data.message}
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ Error: ${error.message}
+                    </div>
+                    <p>Check browser console for details</p>
+                `;
+                console.error('Full error:', error);
+            }
+        }
+
+        async function testDatabase() {
+            const resultDiv = document.getElementById('databaseResult');
+            resultDiv.innerHTML = '<p>Testing database...</p>';
+            
+            try {
+                const response = await fetch('http://localhost/project1/backend/test_connection.php', {
+                    credentials: 'include'
+                });
+                
+                const text = await response.text();
+                
+                if (text.includes('success') || text.includes('connected')) {
+                    resultDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ Database connection successful!
+                        </div>
+                        <pre>${text}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="status error">
+                            ❌ Database connection failed
+                        </div>
+                        <pre>${text}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testRawAPI() {
+            const resultDiv = document.getElementById('rawResult');
+            resultDiv.innerHTML = '<p>Fetching raw response...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/get_connections.php`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                const text = await response.text();
+                
+                resultDiv.innerHTML = `
+                    <h3>Response Status: ${response.status}</h3>
+                    <h4>Response Headers:</h4>
+                    <pre>${Array.from(response.headers.entries()).map(([k,v]) => `${k}: ${v}`).join('\n')}</pre>
+                    <h4>Response Body:</h4>
+                    <pre>${text}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        ❌ Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-test on load
+        window.addEventListener('load', () => {
+            testAuth();
+        });
+    </script>
+</body>
+</html>

@@ -29,7 +29,7 @@ $requester_id = $_SESSION['user_id'];
 $data = json_decode(file_get_contents("php://input"));
 
 // Validate required fields
-if (empty($data->provider_id) || empty($data->requested_skill_id)) {
+if (!isset($data->provider_id) || !isset($data->requested_skill_id)) {
     http_response_code(400);
     echo json_encode([
         'success' => false,
@@ -38,15 +38,29 @@ if (empty($data->provider_id) || empty($data->requested_skill_id)) {
     exit;
 }
 
-// Can't connect with yourself
-if ($requester_id == $data->provider_id) {
+// Convert empty values to proper types
+$provider_id = (int)$data->provider_id;
+$requested_skill_id = (int)$data->requested_skill_id;
+
+if ($provider_id <= 0 || $requested_skill_id <= 0) {
     http_response_code(400);
     echo json_encode([
         'success' => false,
-        'message' => 'You cannot connect with yourself'
+        'message' => 'Invalid provider or skill ID'
     ]);
     exit;
 }
+
+// Self-connection allowed for testing/college project demo purposes
+// Commented out restriction:
+// if ($requester_id == $data->provider_id) {
+//     http_response_code(400);
+//     echo json_encode([
+//         'success' => false,
+//         'message' => 'You cannot connect with yourself'
+//     ]);
+//     exit;
+// }
 
 try {
     $database = new Database();
@@ -85,17 +99,22 @@ try {
                       'pending', :message, :meeting_preference)";
     
     $stmt = $conn->prepare($insert_query);
-    $stmt->bindParam(':requester_id', $requester_id);
-    $stmt->bindParam(':provider_id', $data->provider_id);
-    $stmt->bindParam(':requested_skill_id', $data->requested_skill_id);
+    $stmt->bindParam(':requester_id', $requester_id, PDO::PARAM_INT);
+    $stmt->bindParam(':provider_id', $provider_id, PDO::PARAM_INT);
+    $stmt->bindParam(':requested_skill_id', $requested_skill_id, PDO::PARAM_INT);
     
-    $offered_skill = $data->offered_skill_id ?? null;
-    $message = $data->message ?? 'Hi! I would like to connect and learn from you.';
-    $meeting_pref = $data->meeting_preference ?? 'online';
+    // Handle optional fields with proper defaults
+    $offered_skill = isset($data->offered_skill_id) && !empty($data->offered_skill_id) ? (int)$data->offered_skill_id : null;
+    $message = isset($data->message) && trim($data->message) !== '' ? trim($data->message) : '';
+    $meeting_pref = isset($data->meeting_preference) && !empty($data->meeting_preference) ? $data->meeting_preference : 'online';
     
-    $stmt->bindParam(':offered_skill_id', $offered_skill);
-    $stmt->bindParam(':message', $message);
-    $stmt->bindParam(':meeting_preference', $meeting_pref);
+    if ($offered_skill !== null) {
+        $stmt->bindParam(':offered_skill_id', $offered_skill, PDO::PARAM_INT);
+    } else {
+        $stmt->bindValue(':offered_skill_id', null, PDO::PARAM_NULL);
+    }
+    $stmt->bindParam(':message', $message, PDO::PARAM_STR);
+    $stmt->bindParam(':meeting_preference', $meeting_pref, PDO::PARAM_STR);
     
     if ($stmt->execute()) {
         $exchange_id = $conn->lastInsertId();
@@ -124,7 +143,7 @@ try {
         $notif_stmt->bindParam(':exchange_id', $exchange_id);
         $notif_stmt->execute();
         
-        // Create first message to start the conversation
+        // Create first message to start the conversation (only if message is not empty)
         if (!empty($message) && trim($message) !== '') {
             $msg_query = "INSERT INTO messages 
                           (sender_id, receiver_id, message_text, is_read) 
@@ -132,21 +151,21 @@ try {
                           (:sender_id, :receiver_id, :message_text, 0)";
             
             $msg_stmt = $conn->prepare($msg_query);
-            $msg_stmt->bindParam(':sender_id', $requester_id);
-            $msg_stmt->bindParam(':receiver_id', $data->provider_id);
-            $msg_stmt->bindParam(':message_text', $message);
+            $msg_stmt->bindParam(':sender_id', $requester_id, PDO::PARAM_INT);
+            $msg_stmt->bindParam(':receiver_id', $provider_id, PDO::PARAM_INT);
+            $msg_stmt->bindParam(':message_text', $message, PDO::PARAM_STR);
             $msg_stmt->execute();
             
             Logger::info("First message created for conversation", [
                 'sender_id' => $requester_id,
-                'receiver_id' => $data->provider_id,
+                'receiver_id' => $provider_id,
                 'message_id' => $conn->lastInsertId()
             ]);
         }
         
         Logger::info("Connection request created", [
             'requester_id' => $requester_id,
-            'provider_id' => $data->provider_id,
+            'provider_id' => $provider_id,
             'exchange_id' => $exchange_id
         ]);
         
@@ -162,11 +181,16 @@ try {
     }
 
 } catch (Exception $e) {
-    Logger::error('connect.php exception: ' . $e->getMessage());
+    Logger::error('connect.php exception: ' . $e->getMessage(), [
+        'trace' => $e->getTraceAsString(),
+        'requester_id' => $requester_id ?? 'unknown',
+        'provider_id' => $provider_id ?? 'unknown',
+        'requested_skill_id' => $requested_skill_id ?? 'unknown'
+    ]);
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => 'Server error. Please try again later.'
+        'message' => APP_DEBUG ? $e->getMessage() : 'Server error. Please try again later.'
     ]);
 }
 ?>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Connect Feature</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 2rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 0.75rem 1.5rem;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        button:hover { background: #2563EB; }
+        .success { background: #10B981; }
+        .error { background: #EF4444; }
+        pre {
+            background: #1F2937;
+            color: #F9FAFB;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+        .result { margin-top: 1rem; }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Connect Feature</h1>
+
+    <div class="test-box">
+        <h2>Step 1: Check if you're logged in</h2>
+        <button onclick="checkAuth()">Check Auth</button>
+        <div id="authResult" class="result"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>Step 2: Get Available Skills</h2>
+        <button onclick="getSkills()">Fetch Skills</button>
+        <div id="skillsResult" class="result"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>Step 3: Test Connection</h2>
+        <form id="testConnectForm">
+            <label>Provider User ID:</label>
+            <input type="number" id="providerId" placeholder="Enter user ID (e.g., 2)" required>
+            
+            <label>Skill ID:</label>
+            <input type="number" id="skillId" placeholder="Enter skill ID (e.g., 1)" required>
+            
+            <label>Message (optional):</label>
+            <textarea id="message" placeholder="Your connection message..."></textarea>
+            
+            <label>Meeting Preference:</label>
+            <select id="meetingPref">
+                <option value="online">Online</option>
+                <option value="in_person">In Person</option>
+                <option value="hybrid">Hybrid</option>
+            </select>
+            
+            <button type="submit" class="success">Send Connection Request</button>
+        </form>
+        <div id="connectResult" class="result"></div>
+    </div>
+
+    <div class="test-box">
+        <h2>Step 4: View Your Connections</h2>
+        <button onclick="getConnections()">Fetch Connections</button>
+        <div id="connectionsListResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost/project1/backend/api';
+
+        async function checkAuth() {
+            const resultDiv = document.getElementById('authResult');
+            resultDiv.innerHTML = '<p>Checking...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/check_auth.php`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    resultDiv.innerHTML = `
+                        <div style="background: #D1FAE5; color: #065F46; padding: 1rem; border-radius: 6px;">
+                            ✅ Logged in as: ${data.user.full_name} (ID: ${data.user.user_id})
+                            <br>Email: ${data.user.email}
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Auto-fill provider ID with next user
+                    document.getElementById('providerId').value = data.user.user_id + 1;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div style="background: #FEE2E2; color: #991B1B; padding: 1rem; border-radius: 6px;">
+                            ❌ Not logged in! <a href="signin.html">Go to Login</a>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div style="color: red;">Error: ${error.message}</div>`;
+            }
+        }
+
+        async function getSkills() {
+            const resultDiv = document.getElementById('skillsResult');
+            resultDiv.innerHTML = '<p>Fetching skills...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/get_skills.php`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (data.success && data.skills.length > 0) {
+                    const skillsList = data.skills.slice(0, 5).map(s => 
+                        `<div style="background: #f9f9f9; padding: 0.5rem; margin: 0.5rem 0; border-radius: 4px;">
+                            👤 <strong>${s.user}</strong> (ID: ${s.user_id})<br>
+                            📚 Offering: ${s.offering} (Skill ID: ${s.skill_id})<br>
+                            🎯 Seeking: ${s.seeking}
+                        </div>`
+                    ).join('');
+                    
+                    resultDiv.innerHTML = `
+                        <div style="background: #D1FAE5; color: #065F46; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                            ✅ Found ${data.skills.length} skills
+                        </div>
+                        <h4>Top 5 Skills (use these for testing):</h4>
+                        ${skillsList}
+                        <pre>${JSON.stringify(data.skills[0], null, 2)}</pre>
+                    `;
+                    
+                    // Auto-fill first skill
+                    if (data.skills[0]) {
+                        document.getElementById('skillId').value = data.skills[0].skill_id;
+                        document.getElementById('providerId').value = data.skills[0].user_id;
+                    }
+                } else {
+                    resultDiv.innerHTML = `
+                        <div style="background: #FEF3C7; color: #92400E; padding: 1rem; border-radius: 6px;">
+                            ⚠️ No skills found in database. Add some skills first!
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div style="color: red;">Error: ${error.message}</div>`;
+            }
+        }
+
+        document.getElementById('testConnectForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const resultDiv = document.getElementById('connectResult');
+            resultDiv.innerHTML = '<p>Sending connection request...</p>';
+            
+            const providerId = parseInt(document.getElementById('providerId').value);
+            const skillId = parseInt(document.getElementById('skillId').value);
+            const message = document.getElementById('message').value.trim();
+            const meetingPref = document.getElementById('meetingPref').value;
+            
+            const requestData = {
+                provider_id: providerId,
+                requested_skill_id: skillId,
+                message: message,
+                meeting_preference: meetingPref
+            };
+            
+            console.log('Sending:', requestData);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/connect.php`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div style="background: #D1FAE5; color: #065F46; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                            ✅ ${data.message}
+                            <br>Exchange ID: ${data.exchange_id}
+                        </div>
+                        <p><strong>Now check phpMyAdmin:</strong></p>
+                        <ol>
+                            <li>Open: <a href="http://localhost/phpmyadmin" target="_blank">phpMyAdmin</a></li>
+                            <li>Go to database: <code>skillxchange_db</code></li>
+                            <li>Click table: <code>exchanges</code></li>
+                            <li>Click "Browse" - you should see exchange_id: ${data.exchange_id}</li>
+                        </ol>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    
+                    // Auto-refresh connections
+                    setTimeout(() => getConnections(), 1000);
+                } else {
+                    resultDiv.innerHTML = `
+                        <div style="background: #FEE2E2; color: #991B1B; padding: 1rem; border-radius: 6px;">
+                            ❌ ${data.message}
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div style="background: #FEE2E2; color: #991B1B; padding: 1rem; border-radius: 6px;">
+                        ❌ Error: ${error.message}
+                        <br>Check browser console for details.
+                    </div>
+                `;
+                console.error('Full error:', error);
+            }
+        });
+
+        async function getConnections() {
+            const resultDiv = document.getElementById('connectionsListResult');
+            resultDiv.innerHTML = '<p>Fetching connections...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/get_connections.php`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (data.connections.length > 0) {
+                        const connectionsList = data.connections.map(c => 
+                            `<div style="background: #f9f9f9; padding: 1rem; margin: 0.5rem 0; border-radius: 4px; border-left: 4px solid #3B82F6;">
+                                <strong>Exchange #${c.exchange_id}</strong> - Status: <span style="color: #059669;">${c.status}</span><br>
+                                ${c.is_requester ? 'You → ' + c.provider_name : c.requester_name + ' → You'}<br>
+                                Skill: ${c.requested_skill_name}<br>
+                                Created: ${new Date(c.created_at).toLocaleString()}
+                            </div>`
+                        ).join('');
+                        
+                        resultDiv.innerHTML = `
+                            <div style="background: #D1FAE5; color: #065F46; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                                ✅ You have ${data.connections.length} connection(s)
+                            </div>
+                            ${connectionsList}
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <div style="background: #FEF3C7; color: #92400E; padding: 1rem; border-radius: 6px;">
+                                ℹ️ No connections yet. Create one above!
+                            </div>
+                        `;
+                    }
+                } else {
+                    resultDiv.innerHTML = `
+                        <div style="background: #FEE2E2; color: #991B1B; padding: 1rem; border-radius: 6px;">
+                            ❌ ${data.message}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div style="color: red;">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Auto-check auth on load
+        window.addEventListener('load', () => {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>
