@@ -230,10 +230,10 @@ function getActionButtons(connection) {
                 </button>
             `);
         } else {
-            // Requester can cancel
+            // Requester can cancel (delete)
             buttons.push(`
-                <button class="action-btn btn-secondary" onclick="cancelConnection(${connection.exchange_id})">
-                    🚫 Cancel Request
+                <button class="action-btn btn-danger" onclick="cancelConnection(${connection.exchange_id})">
+                    �️ Delete Request
                 </button>
             `);
         }
@@ -311,14 +311,15 @@ async function acceptConnection(exchangeId) {
     }
 }
 
-// Reject connection request
+// Reject connection request (updates status to rejected, then deletes from database)
 async function rejectConnection(exchangeId) {
-    if (!confirm('Are you sure you want to decline this connection request?')) {
+    if (!confirm('Are you sure you want to decline this connection request? It will be deleted permanently.')) {
         return;
     }
     
     try {
-        const response = await fetch(`${API_BASE_URL}/update_exchange.php`, {
+        // First update status to rejected, then delete
+        await fetch(`${API_BASE_URL}/update_exchange.php`, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -330,60 +331,22 @@ async function rejectConnection(exchangeId) {
             })
         });
 
-        const data = await response.json();
-        
-        if (data.success) {
-            showToast('Connection declined', 'success');
-            
-            // Find and animate the card before removing
-            const cards = document.querySelectorAll('.connection-card');
-            cards.forEach(card => {
-                if (card.querySelector(`[data-user-id="${exchangeId}"]`) || 
-                    card.querySelector(`button[onclick*="${exchangeId}"]`)) {
-                    card.classList.add('removing');
-                }
-            });
-            
-            // Wait for animation to complete before removing from data
-            setTimeout(() => {
-                // Remove the connection from the local data array
-                connectionsData = connectionsData.filter(conn => conn.exchange_id !== exchangeId);
-                
-                // Re-render to update UI
-                renderConnections();
-            }, 300);
-        } else {
-            showToast(data.message || 'Failed to reject', 'error');
-        }
-    } catch (error) {
-        console.error('Error rejecting connection:', error);
-        showToast('Server error', 'error');
-    }
-}
-
-// Cancel connection request
-async function cancelConnection(exchangeId) {
-    if (!confirm('Are you sure you want to cancel this connection request?')) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(`${API_BASE_URL}/update_exchange.php`, {
+        // Then delete from database
+        const response = await fetch(`${API_BASE_URL}/delete_exchange.php`, {
             method: 'POST',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                exchange_id: exchangeId,
-                status: 'cancelled'
+                exchange_id: exchangeId
             })
         });
 
         const data = await response.json();
         
         if (data.success) {
-            showToast('Connection cancelled', 'success');
+            showToast('🗑️ Connection declined and deleted', 'success');
             
             // Find and animate the card before removing
             const cards = document.querySelectorAll('.connection-card');
@@ -403,10 +366,59 @@ async function cancelConnection(exchangeId) {
                 renderConnections();
             }, 300);
         } else {
-            showToast(data.message || 'Failed to cancel', 'error');
+            showToast(data.message || 'Failed to delete', 'error');
         }
     } catch (error) {
-        console.error('Error cancelling connection:', error);
+        console.error('Error deleting connection:', error);
+        showToast('Server error', 'error');
+    }
+}
+
+// Cancel connection request (deletes from database)
+async function cancelConnection(exchangeId) {
+    if (!confirm('Are you sure you want to cancel and delete this connection request? This action cannot be undone.')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/delete_exchange.php`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                exchange_id: exchangeId
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('🗑️ Connection deleted permanently', 'success');
+            
+            // Find and animate the card before removing
+            const cards = document.querySelectorAll('.connection-card');
+            cards.forEach(card => {
+                if (card.querySelector(`[data-user-id="${exchangeId}"]`) || 
+                    card.querySelector(`button[onclick*="${exchangeId}"]`)) {
+                    card.classList.add('removing');
+                }
+            });
+            
+            // Wait for animation to complete before removing from data
+            setTimeout(() => {
+                // Remove the connection from the local data array
+                connectionsData = connectionsData.filter(conn => conn.exchange_id !== exchangeId);
+                
+                // Re-render to update UI
+                renderConnections();
+            }, 300);
+        } else {
+            showToast(data.message || 'Failed to delete', 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting connection:', error);
         showToast('Server error', 'error');
     }
 }

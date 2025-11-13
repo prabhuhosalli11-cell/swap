@@ -814,4 +814,65 @@ For demonstration and testing purposes, users can now connect with themselves:
 
 **File Modified:** `backend/api/connect.php` - Commented out self-connection restriction
 
+---
+
+## 🗑️ DELETE CONNECTION FEATURE (Latest)
+
+### **Permanent Deletion from Database**
+When you cancel or reject a connection request, it is now **permanently deleted** from the database (not just status update).
+
+#### **How It Works:**
+
+**For Requesters (Cancel):**
+- Click "🗑️ Delete Request" button
+- Confirm deletion
+- Connection is permanently removed from database
+- Related notifications are also deleted
+- Cannot be undone!
+
+**For Providers (Reject):**
+- Click "❌ Decline" button
+- Confirm rejection
+- Status updated to 'rejected' first (for logging)
+- Then permanently deleted from database
+- Related notifications are also deleted
+
+#### **Safety Features:**
+✅ **Confirmation dialog** - "Are you sure? This cannot be undone"
+✅ **Permission check** - Only connection owner can delete
+✅ **Status check** - Can only delete pending/cancelled/rejected (not active/completed)
+✅ **Cascade delete** - Related notifications are automatically removed
+✅ **Logging** - All deletions are logged for audit trail
+
+#### **API Endpoint:**
+```
+POST /backend/api/delete_exchange.php
+Body: { "exchange_id": 123 }
+Response: { "success": true, "message": "Connection deleted permanently" }
+```
+
+#### **Database Impact:**
+```sql
+-- Deletes from exchanges table
+DELETE FROM exchanges WHERE exchange_id = ?;
+
+-- Also deletes related notifications
+DELETE FROM notifications WHERE related_id = ? AND type LIKE '%exchange%';
+```
+
+#### **Files Modified:**
+- ✅ `backend/api/delete_exchange.php` - New API for permanent deletion
+- ✅ `connections.js` - Updated cancelConnection() and rejectConnection()
+- ✅ Button text changed: "Cancel Request" → "🗑️ Delete Request"
+- ✅ Button style changed: btn-secondary → btn-danger (red)
+
+#### **Testing:**
+1. Open: `http://localhost/project1/connections.html`
+2. Find a pending connection (or create one from home page)
+3. Click "🗑️ Delete Request" button
+4. Confirm the deletion
+5. Check phpMyAdmin → `exchanges` table → record should be **GONE**!
+
+**Note:** Active and completed exchanges cannot be deleted - they must be cancelled first for record keeping.
+
 ````
