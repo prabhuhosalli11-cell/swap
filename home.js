@@ -98,40 +98,176 @@ function createSkillCard(skill) {
     const exchanges = parseInt(skill.exchanges) || 0;
     
     return `
-        <div class="skill-card" data-user-id="${skill.user_id}">
-            <div class="skill-header">
-                <div class="skill-user">
-                    <div class="skill-avatar" onclick="event.stopPropagation(); openProfileModal(${skill.user_id})" title="View ${skill.user}'s profile">${skill.avatar || '👤'}</div>
-                    <div class="skill-user-info">
-                        <h3>${skill.user}</h3>
-                        <span class="skill-level">${skill.level || 'Expert'}</span>
+        <div class="skill-card" data-user-id="${skill.user_id}" onclick="toggleSkillCard(this, ${skill.user_id})">
+            <!-- Collapsed View -->
+            <div class="skill-card-collapsed">
+                <div class="skill-header">
+                    <div class="skill-user">
+                        <div class="skill-avatar" onclick="event.stopPropagation(); openProfileModal(${skill.user_id})" title="View ${skill.user}'s profile">${skill.avatar || '👤'}</div>
+                        <div class="skill-user-info">
+                            <h3>${skill.user}</h3>
+                            <span class="skill-level">${skill.level || 'Expert'}</span>
+                        </div>
+                    </div>
+                    <div class="skill-stats">
+                        <div class="skill-stat-item">
+                            <span>⭐</span>
+                            <span>${rating.toFixed(1)}</span>
+                        </div>
+                        <div class="skill-stat-item">
+                            <span style="font-size: 0.75rem;">•</span>
+                            <span>${exchanges} exchange${exchanges !== 1 ? 's' : ''}</span>
+                        </div>
                     </div>
                 </div>
-                <div class="skill-stats">
-                    <div class="skill-stat-item">
-                        <span>⭐</span>
-                        <span>${rating.toFixed(1)}</span>
+                <p class="skill-description">${skill.description || 'No description available'}</p>
+                <div class="skill-exchange">
+                    <div class="skill-exchange-item">
+                        <span class="skill-exchange-label">Offering</span>
+                        <div class="skill-exchange-value">${skill.offering}</div>
                     </div>
-                    <div class="skill-stat-item">
-                        <span style="font-size: 0.75rem;">•</span>
-                        <span>${exchanges} exchange${exchanges !== 1 ? 's' : ''}</span>
+                    <div class="skill-exchange-item">
+                        <span class="skill-exchange-label">Seeking</span>
+                        <div class="skill-exchange-value">${skill.seeking || 'Open to offers'}</div>
                     </div>
                 </div>
             </div>
-            <p class="skill-description">${skill.description || 'No description available'}</p>
-            <div class="skill-exchange">
-                <div class="skill-exchange-item">
-                    <span class="skill-exchange-label">Offering</span>
-                    <div class="skill-exchange-value">${skill.offering}</div>
+
+            <!-- Expanded View (Hidden by default) -->
+            <div class="skill-card-expanded" style="display: none;">
+                <!-- Tabs Navigation -->
+                <div class="skill-card-tabs">
+                    <button class="skill-card-tab active" onclick="event.stopPropagation(); switchSkillTab(this, 'about')">
+                        About
+                    </button>
+                    <button class="skill-card-tab" onclick="event.stopPropagation(); switchSkillTab(this, 'myskills')">
+                        My Skills
+                    </button>
+                    <button class="skill-card-tab" onclick="event.stopPropagation(); switchSkillTab(this, 'experienced')">
+                        Skills Experienced
+                    </button>
                 </div>
-                <div class="skill-exchange-item">
-                    <span class="skill-exchange-label">Seeking</span>
-                    <div class="skill-exchange-value">${skill.seeking || 'Open to offers'}</div>
+
+                <!-- Tab Content -->
+                <div class="skill-card-tab-content">
+                    <!-- About Tab -->
+                    <div class="skill-tab-panel active" data-tab="about">
+                        <div class="skill-tab-section">
+                            <h4>📋 Description</h4>
+                            <p>${skill.description || 'No description available'}</p>
+                        </div>
+                        <div class="skill-tab-section">
+                            <h4>⭐ Rating</h4>
+                            <p>${rating.toFixed(1)} stars (${exchanges} exchange${exchanges !== 1 ? 's' : ''})</p>
+                        </div>
+                        <div class="skill-tab-section">
+                            <h4>🎓 Experience Level</h4>
+                            <p>${skill.level || 'Expert'}</p>
+                        </div>
+                    </div>
+
+                    <!-- My Skills Tab -->
+                    <div class="skill-tab-panel" data-tab="myskills">
+                        <div class="skill-tab-section">
+                            <h4>💼 Offering</h4>
+                            <div class="skill-tag-list">
+                                <span class="skill-tag">${skill.offering}</span>
+                            </div>
+                        </div>
+                        <div class="skill-tab-section">
+                            <h4>📚 Proficiency</h4>
+                            <p>${skill.level || 'Expert'} level in ${skill.offering}</p>
+                        </div>
+                    </div>
+
+                    <!-- Skills Experienced Tab -->
+                    <div class="skill-tab-panel" data-tab="experienced">
+                        <div class="skill-tab-section">
+                            <h4>🎯 Seeking</h4>
+                            <div class="skill-tag-list">
+                                <span class="skill-tag seeking">${skill.seeking || 'Open to offers'}</span>
+                            </div>
+                        </div>
+                        <div class="skill-tab-section">
+                            <h4>📈 Learning Goals</h4>
+                            <p>Interested in learning ${skill.seeking || 'various skills'}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="skill-card-actions">
+                    <button class="skill-action-btn skill-connect-btn" onclick="event.stopPropagation(); handleConnect(${skill.user_id})" data-user-id="${skill.user_id}">
+                        💬 Connect
+                    </button>
+                    <button class="skill-action-btn skill-message-btn" onclick="event.stopPropagation(); handleMessage(${skill.user_id})" data-user-id="${skill.user_id}">
+                        ✉️ Message
+                    </button>
                 </div>
             </div>
-            <button class="skill-connect-btn" data-user-id="${skill.user_id}">Connect</button>
         </div>
     `;
+}
+
+// Toggle skill card expansion
+function toggleSkillCard(cardElement, userId) {
+    const collapsed = cardElement.querySelector('.skill-card-collapsed');
+    const expanded = cardElement.querySelector('.skill-card-expanded');
+    const isExpanded = cardElement.classList.contains('expanded');
+    
+    // Close all other expanded cards
+    document.querySelectorAll('.skill-card.expanded').forEach(card => {
+        if (card !== cardElement) {
+            card.classList.remove('expanded');
+            card.querySelector('.skill-card-collapsed').style.display = 'block';
+            card.querySelector('.skill-card-expanded').style.display = 'none';
+        }
+    });
+    
+    // Toggle current card
+    if (isExpanded) {
+        cardElement.classList.remove('expanded');
+        collapsed.style.display = 'block';
+        expanded.style.display = 'none';
+    } else {
+        cardElement.classList.add('expanded');
+        collapsed.style.display = 'none';
+        expanded.style.display = 'block';
+    }
+}
+
+// Switch tabs within skill card
+function switchSkillTab(tabButton, tabName) {
+    const card = tabButton.closest('.skill-card');
+    const allTabs = card.querySelectorAll('.skill-card-tab');
+    const allPanels = card.querySelectorAll('.skill-tab-panel');
+    
+    // Update tab buttons
+    allTabs.forEach(tab => tab.classList.remove('active'));
+    tabButton.classList.add('active');
+    
+    // Update panels
+    allPanels.forEach(panel => {
+        if (panel.dataset.tab === tabName) {
+            panel.classList.add('active');
+        } else {
+            panel.classList.remove('active');
+        }
+    });
+}
+
+// Handle Connect button click
+function handleConnect(userId) {
+    const skillCard = skillsData.find(s => s.user_id === userId);
+    if (skillCard) {
+        openConnectModal(skillCard);
+    }
+}
+
+// Handle Message button click
+function handleMessage(userId) {
+    // Redirect to messages page or open message modal
+    window.location.href = `messages.html?user_id=${userId}`;
 }
 
 // Render skills
@@ -143,21 +279,6 @@ function renderSkills() {
         skillsGrid.style.display = 'grid';
         emptyState.style.display = 'none';
         skillsGrid.innerHTML = skillsData.map(skill => createSkillCard(skill)).join('');
-        
-        // Add click event to connect buttons
-        const connectButtons = document.querySelectorAll('.skill-connect-btn');
-        connectButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const card = this.closest('.skill-card');
-                const userId = parseInt(this.dataset.userId);
-                const skillCard = skillsData.find(s => s.user_id === userId);
-                
-                if (skillCard) {
-                    openConnectModal(skillCard);
-                }
-            });
-        });
     }
 }
 

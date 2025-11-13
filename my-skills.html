@@ -245,7 +245,52 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <div class="logo-icon">SX</div>
+                    <div class="logo-icon">
+                        <svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                                <filter id="shadow">
+                                    <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+                                </filter>
+                            </defs>
+                            <ellipse cx="35" cy="50" rx="18" ry="22" fill="#2D3436" filter="url(#glow)" opacity="0.95"/>
+                            <ellipse cx="65" cy="50" rx="18" ry="22" fill="#636E72" filter="url(#glow)" opacity="0.95"/>
+                            <g stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.9">
+                                <circle cx="30" cy="42" r="3" fill="#FFFFFF"/>
+                                <circle cx="35" cy="48" r="3" fill="#FFFFFF"/>
+                                <circle cx="40" cy="44" r="3" fill="#FFFFFF"/>
+                                <circle cx="32" cy="54" r="3" fill="#FFFFFF"/>
+                                <line x1="30" y1="42" x2="35" y2="48"/>
+                                <line x1="35" y1="48" x2="40" y2="44"/>
+                                <line x1="35" y1="48" x2="32" y2="54"/>
+                                <line x1="30" y1="42" x2="40" y2="44"/>
+                            </g>
+                            <g stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.9">
+                                <circle cx="60" cy="44" r="3" fill="#FFFFFF"/>
+                                <circle cx="65" cy="48" r="3" fill="#FFFFFF"/>
+                                <circle cx="70" cy="42" r="3" fill="#FFFFFF"/>
+                                <circle cx="68" cy="54" r="3" fill="#FFFFFF"/>
+                                <line x1="60" y1="44" x2="65" y2="48"/>
+                                <line x1="65" y1="48" x2="70" y2="42"/>
+                                <line x1="65" y1="48" x2="68" y2="54"/>
+                                <line x1="60" y1="44" x2="70" y2="42"/>
+                            </g>
+                            <g stroke="#E8C547" stroke-width="2.5" fill="none" filter="url(#glow)">
+                                <path d="M 45 45 Q 50 40, 55 45" stroke-linecap="round"/>
+                                <polygon points="55,45 52,43 52,47" fill="#E8C547"/>
+                                <path d="M 55 55 Q 50 60, 45 55" stroke-linecap="round"/>
+                                <polygon points="45,55 48,53 48,57" fill="#E8C547"/>
+                            </g>
+                            <ellipse cx="35" cy="50" rx="20" ry="24" fill="none" stroke="rgba(232, 197, 71, 0.3)" stroke-width="1" opacity="0.6"/>
+                            <ellipse cx="65" cy="50" rx="20" ry="24" fill="none" stroke="rgba(232, 197, 71, 0.3)" stroke-width="1" opacity="0.6"/>
+                        </svg>
+                    </div>
                     <span class="logo-text">SkillXchange</span>
                 </div>
                 <nav class="nav-menu">
