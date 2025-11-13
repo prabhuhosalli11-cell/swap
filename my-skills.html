@@ -411,5 +411,14 @@
     <script src="check_auth.js"></script>
     <script src="auth.js"></script>
     <script src="my-skills.js"></script>
+
+    <!-- Footer -->
+    <script>
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.body.insertAdjacentHTML('beforeend', data);
+            });
+    </script>
 </body>
 </html>
