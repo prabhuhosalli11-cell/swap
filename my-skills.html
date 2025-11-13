@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Skills - SkillXchange</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .skills-section {
+            margin-bottom: 2rem;
+        }
+        
+        .skills-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .skills-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1F2937;
+        }
+        
+        .add-skill-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .add-skill-btn:hover {
+            background: #2563EB;
+        }
+        
+        .skills-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .skill-item {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: box-shadow 0.2s;
+        }
+        
+        .skill-item:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .skill-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .skill-name {
+            font-weight: 600;
+            color: #1F2937;
+            font-size: 1.125rem;
+        }
+        
+        .skill-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            background: #EFF6FF;
+            color: #3B82F6;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+        
+        .skill-details {
+            margin-bottom: 1rem;
+        }
+        
+        .skill-detail-item {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+        
+        .skill-detail-label {
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .skill-description {
+            color: #6B7280;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .skill-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .skill-action-btn {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: 1px solid #D1D5DB;
+            background: white;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .skill-action-btn:hover {
+            background: #F9FAFB;
+        }
+        
+        .skill-action-btn.delete {
+            color: #EF4444;
+            border-color: #FCA5A5;
+        }
+        
+        .skill-action-btn.delete:hover {
+            background: #FEE2E2;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1F2937;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #9CA3AF;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6B7280;
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .proficiency-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .proficiency-beginner { background: #DBEAFE; color: #1E40AF; }
+        .proficiency-intermediate { background: #FEF3C7; color: #92400E; }
+        .proficiency-advanced { background: #D1FAE5; color: #065F46; }
+        .proficiency-expert { background: #FECDD3; color: #BE123C; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header header-sticky">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">SX</div>
+                    <span class="logo-text">SkillXchange</span>
+                </div>
+                <nav class="nav-menu">
+                    <a href="home.html" class="nav-link">Explore</a>
+                    <a href="my-skills.html" class="nav-link active">My Skills</a>
+                    <a href="#" class="nav-link">My Exchanges</a>
+                    <a href="messages.html" class="nav-link">Messages</a>
+                </nav>
+                <div class="header-actions">
+                    <button class="icon-btn">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                    </button>
+                    <div class="user-avatar">JD</div>
+                    <button id="logoutBtn" class="btn-text">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">My Skills</h1>
+
+            <!-- Offering Skills Section -->
+            <div class="skills-section">
+                <div class="skills-header">
+                    <h2>🎯 Skills I'm Offering</h2>
+                    <button class="add-skill-btn" onclick="openAddModal('offering')">
+                        <span>+</span>
+                        Add Skill
+                    </button>
+                </div>
+                <div class="skills-list" id="offeringSkillsList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⏳</div>
+                        <p>Loading skills...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seeking Skills Section -->
+            <div class="skills-section">
+                <div class="skills-header">
+                    <h2>🔍 Skills I'm Seeking</h2>
+                    <button class="add-skill-btn" onclick="openAddModal('seeking')">
+                        <span>+</span>
+                        Add Skill
+                    </button>
+                </div>
+                <div class="skills-list" id="seekingSkillsList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⏳</div>
+                        <p>Loading skills...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Skill Modal -->
+    <div id="skillModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add Skill</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="skillForm" onsubmit="handleSubmit(event)">
+                <input type="hidden" id="skillId" name="user_skill_id">
+                <input type="hidden" id="skillType" name="skill_type">
+                
+                <div class="form-group">
+                    <label class="form-label">Skill *</label>
+                    <select id="skillSelect" name="skill_id" class="form-select" required>
+                        <option value="">Select a skill...</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Proficiency Level</label>
+                        <select id="proficiencyLevel" name="proficiency_level" class="form-select">
+                            <option value="">Not specified</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Years of Experience</label>
+                        <input type="number" id="yearsExperience" name="years_experience" 
+                               class="form-input" min="0" max="50" placeholder="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-textarea" 
+                              placeholder="Tell others about your experience with this skill..."></textarea>
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="button" class="skill-action-btn" onclick="closeModal()" style="flex: 1;">
+                        Cancel
+                    </button>
+                    <button type="submit" class="add-skill-btn" style="flex: 2;">
+                        <span id="submitText">Add Skill</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="check_auth.js"></script>
+    <script src="auth.js"></script>
+    <script src="my-skills.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+Folder PATH listing for volume Windows
+Volume serial number is 463B-D231
+C:.
+|   .env.example
+|   .gitignore
+|   auth.js
+|   check_auth.js
+|   database.md
+|   DETAILS.md
+|   home.html
+|   home.js
+|   IMPLEMENTATION_COMPLETE.md
+|   index.html
+|   PRODUCTION_DEPLOYMENT.md
+|   project_structure.txt
+|   QUICK_START.md
+|   README.md
+|   README_BACKEND.md
+|   SECURITY_SUMMARY.md
+|   signin.html
+|   signup.html
+|   styles.css
+|   
+\---backend
+    |   database_setup.sql
+    |   
+    +---api
+    |       check_auth.php
+    |       get_skills.php
+    |       logout.php
+    |       signin.php
+    |       signup.php
+    |       
+    +---config
+    |       config.php
+    |       cors.php
+    |       database.php
+    |       logger.php
+    |       security.php
+    |       
+    \---migrations
+            001_add_security_tables.sql
+            

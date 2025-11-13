@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sign in to SkillXchange — exchange skills, teach and learn from people worldwide.">
+    <title>Sign In — SkillXchange</title>
+    <!-- Awwwards-inspired: clean font + theme -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="signin.css">
+</head>
+<body class="auth-page">
+    <main class="auth-container" aria-labelledby="signin-heading">
+        <div class="auth-card">
+            <div class="auth-left">
+                <!-- Back Button -->
+                <a href="index.html" class="back-button" aria-label="Go back to home">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span class="visually-hidden">Back</span>
+                </a>
+
+                <!-- Branding -->
+                <div class="auth-header" role="banner">
+                    <div class="auth-logo">
+                        <div class="logo-icon" aria-hidden="true">SX</div>
+                        <h1 class="logo-text">SkillXchange</h1>
+                    </div>
+                    <h2 id="signin-heading" class="auth-title">Welcome back</h2>
+                    <p class="auth-subtitle">Sign in to continue your exchange — teach, learn and connect.</p>
+                </div>
+
+                <p class="auth-note" style="margin-top:18px;color:#6b7280">Secure sign in. We respect your privacy.</p>
+            </div>
+
+            <aside class="auth-right" aria-labelledby="form-title">
+                <!-- Form -->
+                <form id="signinForm" class="auth-form" method="post" action="backend/api/signin.php" autocomplete="on" novalidate>
+                    <h3 id="form-title" class="sr-only">Sign in form</h3>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input class="form-input" type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email" aria-required="true">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input class="form-input" type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password" aria-required="true">
+                    </div>
+
+                    <!-- Remember & Forgot -->
+                    <div class="form-row">
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="link-small">Forgot password?</a>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit" class="btn-primary btn-full">Sign In</button>
+
+                    <div class="auth-footer" style="margin-top:12px;text-align:center;font-size:.95rem">
+                        Don't have an account? <a href="signup.html" class="link-bold">Sign Up</a>
+                    </div>
+                </form>
+
+                <!-- Social Login -->
+                <div class="social-login" style="margin-top:18px">
+                    <div class="divider"><span>Or continue with</span></div>
+                    <div class="social-buttons" role="group" aria-label="Social sign in options">
+                        <button type="button" class="social-btn" aria-label="Sign in with Google">
+                            <span aria-hidden="true">G</span>
+                            <span>Google</span>
+                        </button>
+                        <button type="button" class="social-btn" aria-label="Sign in with GitHub">
+                            <span aria-hidden="true">GH</span>
+                            <span>GitHub</span>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <script src="signin.js" defer></script>
+    <script src="auth.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+# Security logs and application logs
+logs/
+*.log
+
+# Environment files with sensitive data
+.env
+.env.local
+.env.production
+
+# Database backups
+*.sql
+*.sql.gz
+backups/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-*
+.DS_Store
+Thumbs.db
+
+# OS files
+desktop.ini
+.directory
+
+# Temporary files
+tmp/
+temp/
+cache/
+
+# Composer (if using PHP dependencies)
+vendor/
+composer.lock
+
+# Node modules (if adding build tools)
+node_modules/
+package-lock.json
+
+# Session files (if using file-based sessions)
+sessions/
+
+# Upload directories (when implemented)
+uploads/
+user_uploads/
+
+# Test files
+phpunit.xml
+.phpunit.result.cache
+tests/_output/

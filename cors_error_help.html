@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚠️ Wrong Access Method - SkillXchange</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .icon {
+            font-size: 64px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #EF4444;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #6B7280;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .error-box {
+            background: #FEE2E2;
+            border-left: 4px solid #EF4444;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .error-box h3 {
+            color: #991B1B;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .error-box p {
+            color: #DC2626;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .solution-box {
+            background: #D1FAE5;
+            border-left: 4px solid #10B981;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .solution-box h3 {
+            color: #065F46;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .solution-box p {
+            color: #047857;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        
+        .url-box {
+            background: #F3F4F6;
+            border: 2px solid #10B981;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: #111827;
+            text-align: center;
+            margin: 16px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .url-box:hover {
+            background: #E5E7EB;
+            border-color: #059669;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #10B981;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s;
+            margin: 8px;
+        }
+        
+        .btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6366F1;
+        }
+        
+        .btn-secondary:hover {
+            background: #4F46E5;
+        }
+        
+        .steps {
+            margin: 20px 0;
+        }
+        
+        .step {
+            display: flex;
+            align-items: start;
+            margin: 16px 0;
+            padding: 12px;
+            background: #F9FAFB;
+            border-radius: 8px;
+        }
+        
+        .step-number {
+            background: #6366F1;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-content h4 {
+            color: #111827;
+            margin-bottom: 4px;
+            font-size: 16px;
+        }
+        
+        .step-content p {
+            color: #6B7280;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .technical {
+            background: #F3F4F6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .technical h3 {
+            color: #111827;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .technical code {
+            background: #1F2937;
+            color: #10B981;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .technical ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .technical li {
+            padding: 8px 0;
+            color: #4B5563;
+            font-size: 14px;
+        }
+        
+        .technical li:before {
+            content: "→ ";
+            color: #6366F1;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">⚠️</div>
+        <h1>Wrong Access Method Detected!</h1>
+        <p class="subtitle">You're accessing files from your file system instead of through the web server</p>
+        
+        <div class="error-box">
+            <h3>🚫 Current Problem:</h3>
+            <p>You opened the file directly (file:///C:/xampp/htdocs/...) which causes CORS errors. The application needs to run through Apache web server to work properly.</p>
+        </div>
+        
+        <div class="solution-box">
+            <h3>✅ Correct Way to Access:</h3>
+            <p>Click the URL below to open the application correctly through Apache:</p>
+            
+            <div class="url-box" onclick="window.location.href='http://localhost/project1/index.html'" title="Click to open">
+                http://localhost/project1/index.html
+            </div>
+            
+            <p style="text-align: center; color: #047857; font-size: 14px;">
+                ☝️ Click the URL above to open the application
+            </p>
+        </div>
+        
+        <div class="steps">
+            <h3 style="color: #111827; margin-bottom: 16px; font-size: 18px;">📋 Quick Setup Steps:</h3>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Start XAMPP</h4>
+                    <p>Open XAMPP Control Panel and start <strong>Apache</strong> and <strong>MySQL</strong></p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Access via Web Server</h4>
+                    <p>Open: <strong>http://localhost/project1/index.html</strong> in your browser</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Everything Works!</h4>
+                    <p>Now login/logout and all features will work without CORS errors</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="technical">
+            <h3>🔧 Technical Details:</h3>
+            <ul>
+                <li><strong>Wrong:</strong> <code>file:///C:/xampp/htdocs/project1/home.html</code></li>
+                <li><strong>Correct:</strong> <code>http://localhost/project1/home.html</code></li>
+                <li><strong>Why:</strong> Browser blocks requests from <code>null</code> origin (file://) to <code>http://</code> due to CORS security</li>
+                <li><strong>Fix:</strong> Always access through web server (http://localhost)</li>
+            </ul>
+        </div>
+        
+        <div class="button-group">
+            <a href="http://localhost/project1/index.html" class="btn">
+                🏠 Open Home Page
+            </a>
+            <a href="http://localhost/project1/signin.html" class="btn btn-secondary">
+                🔐 Go to Sign In
+            </a>
+        </div>
+        
+        <p style="text-align: center; color: #9CA3AF; font-size: 14px; margin-top: 30px;">
+            💡 Tip: Bookmark <strong>http://localhost/project1/</strong> for easy access
+        </p>
+    </div>
+    
+    <script>
+        // Auto-redirect after 10 seconds
+        let countdown = 10;
+        const originalTitle = document.title;
+        
+        const interval = setInterval(() => {
+            countdown--;
+            document.title = `(${countdown}s) ${originalTitle}`;
+            
+            if (countdown <= 0) {
+                clearInterval(interval);
+                window.location.href = 'http://localhost/project1/index.html';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
