@@ -3,16 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SkillXchange - Connect with people worldwide to exchange skills. Learn what you want, teach what you know. No money, just knowledge.">
-    <meta name="keywords" content="skill exchange, learn, teach, knowledge sharing, free learning">
+    <meta name="description" content="SkillXchange - Exchange Skills, Grow Together">
     <title>SkillXchange - Exchange Skills, Grow Together</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="landing.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <nav class="header-content" aria-label="Main navigation">
+    <!-- Animated Background -->
+    <div class="animated-background">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+        <div class="orb orb-5"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <svg width="32" height="32" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="35" cy="50" r="18" fill="#A78BFA" opacity="0.8"/>
+                    <circle cx="65" cy="50" r="18" fill="#A78BFA" opacity="0.8"/>
+                    <path d="M 45 45 L 55 45 M 55 55 L 45 55" stroke="#60A5FA" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                <span>SkillXchange</span>
+            </a>
+            <div class="nav-links">
+                <a href="home.html">Community</a>
+                <a href="home.html">Community</a>
+                <a href="messages.html">Messages</a>
+                <a href="signin.html">Sign In</a>
+                <a href="profile.html">Profile</a>
+                <a href="signup.html" class="btn-get-started">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Exchange Skills, Grow<br>
+                    <span class="gradient-text">Together</span>
+                </h1>
+
+                <!-- How to Works Steps -->
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <span>How to Works</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <span>Mash Your Swap</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <span>Exchange & Thrive</span>
+                    </div>
+                </div>
+
+                <!-- CTA Buttons -->
+                <div class="hero-buttons">
+                    <a href="home.html" class="btn-primary">
+                        <span>Start Exchangeo Now</span>
+                    </a>
+                    <a href="#key-advantages" class="btn-secondary">Explore Details</a>
+                </div>
+            </div>
+
+            <!-- Exchange Animation -->
+            <div class="exchange-visual">
+                <div class="skill-icon coding">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="2" width="20" height="20" rx="4" fill="#4DD4AC"/>
+                        <path d="M8 12L10 10L8 8M12 14H16" stroke="#1E293B" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Coding</span>
+                </div>
+                
+                <div class="exchange-arrows">
+                    <svg width="120" height="120" viewBox="0 0 120 120">
+                        <defs>
+                            <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#4DD4AC;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#60A5FA;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="60" cy="60" r="50" fill="url(#arrowGradient)" opacity="0.2"/>
+                        <path d="M 40 50 L 60 50 L 55 45 M 60 50 L 55 55" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <path d="M 80 70 L 60 70 L 65 65 M 60 70 L 65 75" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    </svg>
+                </div>
+
+                <div class="skill-icon design">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="2" width="20" height="20" rx="4" fill="#A78BFA"/>
+                        <circle cx="12" cy="10" r="3" fill="#1E293B"/>
+                        <circle cx="8" cy="16" r="2" fill="#1E293B"/>
+                        <circle cx="16" cy="16" r="2" fill="#1E293B"/>
+                    </svg>
+                    <span>Design</span>
+                </div>
+            </div>
+
+            <!-- Sidebar Panel -->
+            <div class="sidebar-panel">
+                <div class="panel-section">
+                    <div class="panel-icon">✨</div>
+                    <h3>Plan Your Skill Swap</h3>
+                    <input type="text" placeholder="I have Skill..." class="panel-input">
+                    <input type="text" placeholder="Skill I search" class="panel-input">
+                    <input type="text" placeholder="Skill I want to learn" class="panel-input">
+                </div>
+                
+                <button class="btn-connect">
+                    <span>✨</span> Connect & Stomap Plan
+                </button>
+                <p class="panel-footer">Connect with Leaders</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-item">
+                <h2>1.110K+</h2>
+                <p>New Users</p>
+            </div>
+            <div class="stat-item">
+                <h2>2.500+</h2>
+                <p>Skills Available</p>
+            </div>
+            <div class="stat-item">
+                <h2>2.500</h2>
+                <p>Skills Available</p>
+            </div>
+            <div class="stat-item">
+                <h2>3 10+</h2>
+                <p>Daily Ecbg Exchanges</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Advantages Section -->
+    <section class="key-advantages" id="key-advantages">
+        <div class="advantages-container">
+            <h2 class="section-title">Key Advantages</h2>
+            <div class="advantages-grid">
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" fill="#4DD4AC" opacity="0.3"/>
+                            <path d="M12 6V12M12 12V18M12 12H18M12 12H6" stroke="#4DD4AC" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>Pure Exchange</h3>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="#60A5FA" stroke-width="2" opacity="0.3"/>
+                            <path d="M8 12L11 15L16 9" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>Global Access</h3>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                            <path d="M17 21V19C17 16.2386 14.7614 14 12 14C9.23858 14 7 16.2386 7 19V21" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="12" cy="7" r="4" stroke="#A78BFA" stroke-width="2"/>
+                            <path d="M17 11C18.6569 11 20 9.65685 20 8C20 6.34315 18.6569 5 17 5" stroke="#A78BFA" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>Trusted Matchmaking</h3>
+                </div>
+                
+                <div class="advantage-card">
+                    <div class="advantage-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="6" width="18" height="13" rx="2" stroke="#F59E0B" stroke-width="2" opacity="0.3"/>
+                            <path d="M12 12V16M9 14H15" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>Secure Payments</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Unlock Your Next Skill Today</h2>
+            <a href="signup.html" class="btn-cta">Get Started Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <script>
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.body.insertAdjacentHTML('beforeend', data);
+            });
+    </script>
+
+    <script src="landing.js"></script>
+</body>
+</html>
                 <a href="index.html" class="logo" aria-label="SkillXchange Home">
                     <div class="logo-icon" aria-hidden="true">
                         <svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -133,13 +337,13 @@
         </div>
     </main>
 
-    <!-- Footer -->
+    <!-- Footer
     <script>
         fetch('footer.html')
             .then(response => response.text())
             .then(data => {
                 document.body.insertAdjacentHTML('beforeend', data);
             });
-    </script>
+    </script> -->
 </body>
 </html>
